@@ -20,6 +20,17 @@ Using it is Apple's recommended approach when dealing with localizations. Read m
 
 Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
 
+*Trimming*
+
+Remove some localizations before sending them to your translation service.
+
+```
+trim_localizations(
+  path: "/path/to/en.xliff",
+  text: [ "", " ", ".", "Label", /^[0-9]+$/ ],
+  comment: [ /^do not translate/i ]
+)
+```
 
 ## Run tests for this plugin
 
