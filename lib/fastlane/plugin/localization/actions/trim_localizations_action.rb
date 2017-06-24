@@ -3,8 +3,8 @@ module Fastlane
     Match = Struct.new("Match", :node, :field, :exp)
     class TrimLocalizationsAction < Action
       def self.run(params)
-        Actions.verify_gem!('nokogiri')
-        require 'nokogiri'
+        Actions.verify_gem!('oga')
+        require 'oga'
 
         path = params[:path]
         items = {
@@ -15,18 +15,20 @@ module Fastlane
         UI.success "Trimming localizations in #{path}"
 
         matches = []
-        doc = Nokogiri::XML(File.open(path))
+        doc = Oga.parse_xml(File.open(path))
         items.each do |type, values|
           kind = type == :source ? 'text' : 'comment'
           values.each do |e|
             if e.kind_of? String
-              doc.css("trans-unit #{type}[text()='#{e}']").each do |node|
+              doc.css("trans-unit #{type}").select { |n| n.text == e }.each do |node|
                 matches << Match.new(node, kind, e)
               end
             elsif e.kind_of? Regexp
               doc.css("trans-unit #{type}").select { |n| n.text =~ e }.each do |node|
                 matches << Match.new(node, kind, e.to_s)
               end
+            else
+              UI.error "Trimming value (#{e}) must be either a string or a regular expression."
             end
           end
         end
