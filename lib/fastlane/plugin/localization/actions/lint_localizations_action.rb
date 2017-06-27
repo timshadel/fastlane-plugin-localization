@@ -56,16 +56,18 @@ module Fastlane
         if missing_count == 0
           UI.success "No missing comments"
         elsif missing_count == 1
-          UI.message "Missing 1 translator comment"
+          UI.error "Missing 1 translator comment"
         else
-          UI.message "Missing #{missing_count} translator comments"
+          UI.error "Missing #{missing_count} translator comments"
         end
 
+        UI.success "Adjusting translator notes for UI elements"
         items.each do |item|
           desc = "#{item.note} (It appears as a #{self.explain item.role, item.type})"
           note = doc.at_xpath("//trans-unit[@id='#{item.unit.get('id')}']/note/text()")
           note.text = desc
-          UI.message desc
+          file = item.unit.parent.parent
+          UI.message "Setting note to '#{desc}' for '#{item.unit.get('id')}' in #{file.get('original')}"
         end
 
         if missing_count == 0 or warn_on_missing
@@ -73,6 +75,11 @@ module Fastlane
             File.open(path, 'w') { |file| file.write(doc.to_xml) }
             UI.success "Updated translator notes for #{items.count} UI elements"
           end
+        else
+          if items.count > 0
+            UI.error "Skipped updating translator notes for #{items.count} UI elements"
+          end
+          UI.build_failure! "Translator comments are required"
         end
       end
 
