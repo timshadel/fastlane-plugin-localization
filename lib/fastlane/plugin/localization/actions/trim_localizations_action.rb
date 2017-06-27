@@ -36,8 +36,12 @@ module Fastlane
         matches.each do |match|
           puts(match) if match.node.nil?
           unit = match.node.parent
+          if unit.nil? or unit.parent.nil?
+            UI.message "Removing #{unit.attr('id')} because its #{match.field} was '#{match.node.text}'"
+            next
+          end
           file = unit.parent.parent
-          UI.message "Removing #{unit.attr('id')} because its #{match.field} was '#{match.node.text}' (#{file.attr('original')})'"
+          UI.message "Removing #{unit.attr('id')} because its #{match.field} was '#{match.node.text}' (#{file.attr('original')})"
           unit.remove
         end
 
