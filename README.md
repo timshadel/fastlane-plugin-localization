@@ -32,6 +32,17 @@ trim_localizations(
 )
 ```
 
+*Linting*
+
+Mostly, this is about finding strings in Interface Builder that have no "Comment for Localizer."
+
+```
+lint_localizations(
+  path: "/path/to/en.xliff",
+  missing_comments: "warning"
+)
+```
+
 ## Run tests for this plugin
 
 To run both the tests, and code style validation, run
