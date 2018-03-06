@@ -27,7 +27,7 @@ Remove some localizations before sending them to your translation service.
 ```
 trim_localizations(
   path: "/path/to/en.xliff",
-  text: [ "", " ", ".", "Label", /^[0-9]+$/ ],
+  text: [ ".", "Label", /^ *$/, /^[0-9]+$/ ],
   comment: [ /^do not translate/i ]
 )
 ```
