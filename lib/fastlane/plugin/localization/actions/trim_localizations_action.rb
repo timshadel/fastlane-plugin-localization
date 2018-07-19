@@ -8,9 +8,11 @@ module Fastlane
 
         path = params[:path]
         items = {
-          source: params[:text],
-          note: params[:comment]
+          source: params[:text] || [],
+          note: params[:comment] || []
         }
+        files = params[:files] || []
+        ids = params[:ids] || []
 
         UI.success "Trimming localizations in #{path}"
 
@@ -19,7 +21,7 @@ module Fastlane
         # Remove files
 
         matches = []
-        params[:files].each do |e|
+        files.each do |e|
           if e.kind_of? String
             doc.css("file").select { |f| f.attr('original').value == e }.each do |node|
               matches << Match.new(node, 'file', e)
@@ -48,7 +50,7 @@ module Fastlane
 
 
         matches = []
-        params[:ids].each do |e|
+        ids.each do |e|
           if e.kind_of? String
             doc.css("trans-unit").select { |u| u.attr('id').value == e }.each do |node|
               matches << Match.new(node, 'phrase', e)
